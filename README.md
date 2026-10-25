@@ -100,6 +100,15 @@ docs/                    设计、测试、部署、演示与开发日志
 
 该接口可对接任意具备 HTTP 调用能力的学习助手，用于读取学习进度、考试记录和交卷事件。
 
+## WebView / APK
+
+- 前端已按 WebView 兼容方式构建：hash 路由、相对路径、本地资源
+- 已提供最小 Android WebView 容器：`webview/`
+- 构建：`bash webview/build-apk.sh`（使用本机 Android SDK，不依赖 Gradle）
+- 产物：`webview/exam-system-debug.apk`（debug 签名，versionName 1.0）
+- 使用：手机与电脑同一 Wi-Fi，APK 内点右上角「设置」填写 `http://电脑IP:3000`
+- 说明：APK 只是容器，页面由电脑上的 Express 提供
+
 ## 测试
 
 ```bash
@@ -113,6 +122,7 @@ npm test
 - `docs/DESIGN.md`：架构、数据模型、关键设计与 API 概览
 - `docs/TEST-REPORT.md`：测试清单与结果
 - `docs/DEPLOY.md`：本地部署、离线验证与 WebView 兼容
+- `webview/README.md`：Android WebView 容器与 APK 构建
 - `docs/DEMO-SCRIPT.md`：8 分钟演示脚本
 - `docs/DEVLOG.md`：开发日志
 - `docs/SUPERVISOR_API.md`：AI 学习监督接口（预留）

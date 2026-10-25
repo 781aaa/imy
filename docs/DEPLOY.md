@@ -78,7 +78,16 @@ grep -Eo '(https?:)?//[^" ]+' web/dist/index.html
 - 使用 hash 路由（`#/login`），不依赖服务端路由回退
 - Vite `base: './'`，所有资源为相对路径
 - 可直接把 `web/dist` 交给任意 WebView 容器加载
-- 若需要 APK，可在 `web/dist` 外再包一层原生 WebView 壳，后端接口保持不变
+
+## Android WebView / APK
+
+- 容器源码：`webview/android/`
+- 构建脚本：`webview/build-apk.sh`（使用本机 Android SDK，不依赖 Gradle）
+- 产物：`webview/exam-system-debug.apk`（debug 签名，versionName 1.0）
+- 安装：手机开启 USB 调试后执行
+  `$ANDROID_HOME/platform-tools/adb.exe install -r webview/exam-system-debug.apk`
+- 使用：手机与电脑同一 Wi-Fi，APK 内点右上角「设置」，填写 `http://电脑局域网IP:3000`
+- 注意：APK 只是 WebView 壳，不包含前端；电脑需要保持 `npm start` 运行
 
 ## 常见问题
 

@@ -259,8 +259,21 @@
 - 27 个测试全部通过（新增审计接口测试）
 - 页面截图：`docs/papers.png`、`docs/exams.png`、`docs/classes.png`、`docs/knowledge.png`、`docs/audit.png`、`docs/study-report.png`
 
+## 2026-10-25 · WebView 容器与 APK
+
+- 新增 `webview/`：最小 Android WebView 容器，加载电脑上运行的考试系统
+- 不依赖 Gradle，直接使用 Android SDK 工具链（`javac + d8 + aapt2 + zipalign + apksigner`）
+- 产物：`webview/exam-system-debug.apk`
+  - 包名 `com.example.examsystem`，versionName 1.0，minSdk 24，targetSdk 35
+  - 约 13 KB，debug 签名
+  - SHA256：`b855467445d02e65fca5fbdc91a878646f79d3b12571b9259a91a64d1b7f0056`
+- APK 内右上角「设置」可填写电脑局域网地址（默认 `http://192.168.1.100:3000`）
+- 已开启 JavaScript、DOM Storage、cleartext HTTP
+- 验证：`aapt2 dump badging` 与 `apksigner verify` 均通过
+- 说明：APK 只是壳，前端仍由 `web/dist` + Express 提供，不包含在 APK 内
+
 **待办**
 
-- WebView / APK 形态确认与打包（如果老师要求）
 - 听力题（当前架构不支持音频）
+- A 级题库继续扩充
 - A 级题库继续扩充
