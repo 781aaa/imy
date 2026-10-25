@@ -70,6 +70,13 @@ function findByNameAndParent(name, parentId) {
   );
 }
 
+function findByName(name) {
+  return get(
+    'SELECT * FROM knowledge_points WHERE name = ? ORDER BY id ASC LIMIT 1',
+    [String(name)],
+  );
+}
+
 function countChildren(id) {
   const row = get('SELECT COUNT(*) AS count FROM knowledge_points WHERE parent_id = ?', [
     Number(id),
@@ -106,6 +113,7 @@ module.exports = {
   update,
   remove,
   findByNameAndParent,
+  findByName,
   countChildren,
   countQuestions,
   wouldCreateCycle,

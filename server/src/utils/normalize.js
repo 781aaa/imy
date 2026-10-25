@@ -70,6 +70,14 @@ function isAnswerCorrect(type, userAnswer, correctAnswer) {
   }
 }
 
+function normalizeBooleanAnswer(value) {
+  if (typeof value === 'boolean') return value ? 'true' : 'false';
+  const text = String(value ?? '').trim().toLowerCase();
+  if (['true', '1', '对', '正确', 't', 'yes'].includes(text)) return 'true';
+  if (['false', '0', '错', '错误', 'f', 'no'].includes(text)) return 'false';
+  return null;
+}
+
 function isBlankAnswer(answer) {
   if (answer === null || answer === undefined) return true;
   if (Array.isArray(answer)) return answer.every((item) => isBlankAnswer(item));
@@ -82,6 +90,7 @@ module.exports = {
   normalizeChoice,
   normalizeFillAnswer,
   splitFillVariants,
+  normalizeBooleanAnswer,
   isAnswerCorrect,
   isBlankAnswer,
 };
