@@ -10,6 +10,7 @@
     "test": "node --test server/tests",
     "db:migrate": "node server/src/db/migrate.js",
     "db:seed": "node server/src/db/seed.js",
+    "db:seed:english": "node server/src/db/seed-english.js",
     "count": "node server/scripts/count-lines.js"
   },
   "dependencies": {
