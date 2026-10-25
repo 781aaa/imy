@@ -53,10 +53,25 @@ export const questionApi = {
   exportCsv: (params) => client.get('/questions/export', { params }),
 };
 
+export const studentApi = {
+  listExams: () => client.get('/student/exams'),
+  start: (examId) => client.post(`/student/exams/${examId}/start`),
+  paper: (sessionId) => client.get(`/student/sessions/${sessionId}/paper`),
+  saveAnswers: (sessionId, answers) =>
+    client.patch(`/student/sessions/${sessionId}/answers`, { answers }),
+  reportEvent: (sessionId, payload) =>
+    client.post(`/student/sessions/${sessionId}/events`, payload, { silent: true }),
+  submit: (sessionId) =>
+    client.post(`/student/sessions/${sessionId}/submit`),
+  result: (sessionId) =>
+    client.get(`/student/sessions/${sessionId}/result`),
+};
+
 export default {
   auth: authApi,
   users: userApi,
   classes: classApi,
   knowledge: knowledgeApi,
   questions: questionApi,
+  student: studentApi,
 };

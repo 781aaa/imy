@@ -76,16 +76,28 @@ const routes = [
       {
         path: 'my-exams',
         name: 'my-exams',
-        component: () => import('../views/PlaceholderView.vue'),
+        component: () => import('../views/MyExamsView.vue'),
         meta: { title: '我的考试', roles: ['student'] },
       },
       {
         path: 'my-results',
         name: 'my-results',
-        component: () => import('../views/PlaceholderView.vue'),
+        component: () => import('../views/MyResultsView.vue'),
         meta: { title: '我的成绩', roles: ['student'] },
       },
     ],
+  },
+  {
+    path: '/exam/:examId',
+    name: 'exam-taking',
+    component: () => import('../views/ExamTakingView.vue'),
+    meta: { title: '在线考试', roles: ['student'] },
+  },
+  {
+    path: '/result/:sessionId',
+    name: 'exam-result',
+    component: () => import('../views/ExamResultView.vue'),
+    meta: { title: '成绩详情', roles: ['student'] },
   },
   {
     path: '/:pathMatch(.*)*',
