@@ -113,7 +113,10 @@ GET /api/supervisor/records?student=student01&limit=20
 GET /api/supervisor/events?student=student01&status=pending&limit=50
 ```
 
-每次交卷写入一条 `exam_submitted` 事件，包含考试名、总分、是否含主观题、交卷方式（手动/超时自动）、异常操作次数。
+事件类型：
+
+- `exam_submitted`：每次交卷写入，包含考试名、客观分、是否含主观题、交卷方式（手动/超时自动）、异常操作次数。
+- `exam_graded`：阅卷完成、成绩合成时写入，包含客观分、主观分、总分、及格线与是否及格。
 
 ### 5. 标记事件已处理
 
@@ -153,6 +156,5 @@ POST /api/supervisor/events/12/ack
 
 ## 已预留但未实现的部分
 
-- 主观题阅卷完成后的事件（`exam_graded`）
 - 学习计划 / 每日目标
 - 外部助手侧的轮询与消息推送（不在本项目内）
