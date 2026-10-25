@@ -51,6 +51,8 @@ npm install
 npm run dev
 ```
 
+Windows 下可直接双击项目根目录的 `start-exam.bat`：服务未启动时会自动拉起并打开浏览器，已在运行则只打开浏览器。
+
 ## 演示账号
 
 | 角色 | 账号 | 密码 |
