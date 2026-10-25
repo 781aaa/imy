@@ -12,6 +12,7 @@ const studentRoutes = require('./student.routes');
 const supervisorRoutes = require('./supervisor.routes');
 const gradingRoutes = require('./grading.routes');
 const statsRoutes = require('./stats.routes');
+const practiceRoutes = require('./practice.routes');
 
 const router = express.Router();
 
@@ -26,5 +27,6 @@ router.use('/student', studentRoutes);
 router.use('/supervisor', supervisorRoutes);
 router.use('/grading', gradingRoutes);
 router.use('/stats', statsRoutes);
+router.use('/practice', practiceRoutes);
 
 module.exports = router;

@@ -15,6 +15,11 @@ const MIGRATIONS = [
     name: 'supervisor_events',
     file: 'schema_v2.sql',
   },
+  {
+    version: 3,
+    name: 'practice_records',
+    file: 'schema_v3.sql',
+  },
 ];
 
 function ensureMigrationTable(db) {
