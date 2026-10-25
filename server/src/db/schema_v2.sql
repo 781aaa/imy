@@ -1,4 +1,4 @@
--- v2：小克监督接口事件队列
+-- v2：AI 学习监督接口事件队列
 -- 仅预留数据出口，不做任何外发连接
 
 CREATE TABLE IF NOT EXISTS supervisor_events (

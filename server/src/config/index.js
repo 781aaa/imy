@@ -43,7 +43,7 @@ const config = Object.freeze({
   supervisor: {
     enabled: process.env.SUPERVISOR_ENABLED === 'true',
     apiKey: process.env.SUPERVISOR_API_KEY || '',
-    displayName: process.env.SUPERVISOR_NAME || '小克',
+    displayName: process.env.SUPERVISOR_NAME || 'AI 学习助手',
   },
 });
 
