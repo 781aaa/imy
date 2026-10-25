@@ -4,6 +4,7 @@ const sessionRepository = require('../repositories/session.repository');
 const examRepository = require('../repositories/exam.repository');
 const paperRepository = require('../repositories/paper.repository');
 const examService = require('./exam.service');
+const supervisorService = require('./supervisor.service');
 const { parseJson } = require('../utils/serializers');
 const { isAnswerCorrect } = require('../utils/normalize');
 const { shuffleArray } = require('../utils/shuffle');
@@ -419,6 +420,27 @@ function submitSessionInternal(session, submitType) {
     submitType,
     updatedAt: gradedAt,
   });
+
+  try {
+    const fresh = sessionRepository.findById(session.id);
+    const exam = examRepository.findById(session.exam_id);
+
+    supervisorService.enqueueExamSubmitted({
+      sessionId: Number(session.id),
+      studentId: Number(session.student_id),
+      examId: Number(session.exam_id),
+      examTitle: exam ? exam.title : '',
+      objectiveScore,
+      subjectiveScore: 0,
+      totalScore: objectiveScore,
+      hasSubjective,
+      submitType,
+      submittedAt: gradedAt,
+      violationCount: Number(fresh ? fresh.violation_count : 0),
+    });
+  } catch (error) {
+    // 督导事件写入失败不影响交卷
+  }
 
   return {
     alreadySubmitted: false,

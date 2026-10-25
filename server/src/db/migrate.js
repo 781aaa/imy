@@ -10,6 +10,11 @@ const MIGRATIONS = [
     name: 'initial_schema',
     file: 'schema.sql',
   },
+  {
+    version: 2,
+    name: 'supervisor_events',
+    file: 'schema_v2.sql',
+  },
 ];
 
 function ensureMigrationTable(db) {

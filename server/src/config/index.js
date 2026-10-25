@@ -40,6 +40,11 @@ const config = Object.freeze({
   upload: {
     maxBytes: Number(process.env.UPLOAD_MAX_BYTES || 5 * 1024 * 1024),
   },
+  supervisor: {
+    enabled: process.env.SUPERVISOR_ENABLED === 'true',
+    apiKey: process.env.SUPERVISOR_API_KEY || '',
+    displayName: process.env.SUPERVISOR_NAME || '小克',
+  },
 });
 
 module.exports = config;
