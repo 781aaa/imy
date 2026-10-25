@@ -70,7 +70,9 @@ server/src/services      业务逻辑层
 server/src/controllers   HTTP 控制器
 server/src/routes        路由
 server/src/jobs          定时任务
+server/tests             单元与集成测试
 web/                     Vue3 前端
+docs/                    设计、测试、部署、演示与开发日志
 ```
 
 分层约定：`routes → controllers → services → repositories → db`，不允许跨层调用。
@@ -95,3 +97,21 @@ web/                     Vue3 前端
 - 当前没有部署或连接任何外部 AI 服务
 
 该接口可对接任意具备 HTTP 调用能力的学习助手，用于读取学习进度、考试记录和交卷事件。
+
+## 测试
+
+```bash
+npm test
+```
+
+当前共 26 个测试，覆盖判分矩阵、认证权限、题库与 CSV、组卷快照、考试交卷、练习、模拟考试、阅卷与统计。详见 `docs/TEST-REPORT.md`。
+
+## 文档
+
+- `docs/DESIGN.md`：架构、数据模型、关键设计与 API 概览
+- `docs/TEST-REPORT.md`：测试清单与结果
+- `docs/DEPLOY.md`：本地部署、离线验证与 WebView 兼容
+- `docs/DEMO-SCRIPT.md`：8 分钟演示脚本
+- `docs/DEVLOG.md`：开发日志
+- `docs/SUPERVISOR_API.md`：AI 学习监督接口（预留）
+- `docs/line-count.txt`：后端纯代码行数统计凭证
