@@ -22,27 +22,27 @@
 
 /* 学生端紫色主题：在学生布局、答题页、成绩页的根节点加 .theme-purple */
 .theme-purple {
-  --brand: #6d28d9;
-  --brand-light: #8b5cf6;
-  --brand-soft: #f3e8ff;
-  --brand-deep: #2e1065;
-  --brand-grad: linear-gradient(135deg, #4c1d95, #6d28d9 60%, #8b5cf6);
-  --brand-shadow: rgba(109, 40, 217, 0.24);
-  --brand-ring: rgba(109, 40, 217, 0.12);
+  --brand: #8b5cf6;
+  --brand-light: #a78bfa;
+  --brand-soft: #f6f3ff;
+  --brand-deep: #4a378f;
+  --brand-grad: linear-gradient(135deg, #7a5fd0, #9b82f5 60%, #b9a6ff);
+  --brand-shadow: rgba(139, 92, 246, 0.2);
+  --brand-ring: rgba(139, 92, 246, 0.14);
   --brand-border-strong: #c4b5fd;
   --sheet-answered-bg: #ede9fe;
   --sheet-answered-border: #c4b5fd;
-  --sheet-answered-text: #6d28d9;
-  --page-bg: #f8f5fc;
-  --border: #ebe3f7;
+  --sheet-answered-text: #7c3aed;
+  --page-bg: #faf8ff;
+  --border: #efeaf9;
 
-  --el-color-primary: #6d28d9;
-  --el-color-primary-light-3: #8b5cf6;
-  --el-color-primary-light-5: #a78bfa;
-  --el-color-primary-light-7: #c4b5fd;
-  --el-color-primary-light-8: #ddd6fe;
-  --el-color-primary-light-9: #f3e8ff;
-  --el-color-primary-dark-2: #5b21b6;
+  --el-color-primary: #8b5cf6;
+  --el-color-primary-light-3: #a78bfa;
+  --el-color-primary-light-5: #c4b5fd;
+  --el-color-primary-light-7: #ddd6fe;
+  --el-color-primary-light-8: #ede9fe;
+  --el-color-primary-light-9: #f5f3ff;
+  --el-color-primary-dark-2: #7c3aed;
 }
 
 * {
