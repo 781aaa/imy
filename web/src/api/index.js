@@ -40,9 +40,23 @@ export const knowledgeApi = {
   remove: (id) => client.delete(`/knowledge-points/${id}`),
 };
 
+export const questionApi = {
+  list: (params) => client.get('/questions', { params }),
+  detail: (id) => client.get(`/questions/${id}`),
+  create: (payload) => client.post('/questions', payload),
+  update: (id, payload) => client.patch(`/questions/${id}`, payload),
+  remove: (id) => client.delete(`/questions/${id}`),
+  publish: (id) => client.post(`/questions/${id}/publish`),
+  archive: (id) => client.post(`/questions/${id}/archive`),
+  statistics: () => client.get('/questions/statistics'),
+  importCsv: (formData) => client.post('/questions/import', formData),
+  exportCsv: (params) => client.get('/questions/export', { params }),
+};
+
 export default {
   auth: authApi,
   users: userApi,
   classes: classApi,
   knowledge: knowledgeApi,
+  questions: questionApi,
 };

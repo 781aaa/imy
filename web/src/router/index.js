@@ -40,7 +40,7 @@ const routes = [
       {
         path: 'questions',
         name: 'questions',
-        component: () => import('../views/PlaceholderView.vue'),
+        component: () => import('../views/QuestionsView.vue'),
         meta: { title: '题库管理', roles: ['admin', 'teacher'] },
       },
       {

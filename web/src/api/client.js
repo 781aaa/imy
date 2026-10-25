@@ -48,4 +48,32 @@ client.interceptors.response.use(
   },
 );
 
+export async function downloadFile(path, filename) {
+  const token = localStorage.getItem(TOKEN_KEY);
+  const response = await fetch(`/api${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+
+  if (!response.ok) {
+    let message = '下载失败';
+    try {
+      const body = await response.json();
+      if (body && body.message) message = body.message;
+    } catch (error) {
+      // 非 JSON 响应保持默认提示
+    }
+    throw new Error(message);
+  }
+
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 export default client;
