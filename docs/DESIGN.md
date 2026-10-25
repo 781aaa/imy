@@ -176,6 +176,7 @@ draft → scheduled → ongoing → finished → published
 | `/api/stats` | 统计、排名、分析、导出 | 教师、管理员 |
 | `/api/practice` | 练习、统计、错题本、自评 | 学生 |
 | `/api/mock-exams` | 学生模拟考试 | 学生 |
+| `/api/audit-logs` | 审计日志查询 | 管理员 |
 | `/api/supervisor` | 外部学习助手（预留） | API Key |
 
 ## 8. 权限模型
@@ -198,4 +199,4 @@ draft → scheduled → ongoing → finished → published
 - 听力题需要音频存储与播放，当前不支持
 - 简答题不自动判分
 - 练习与模拟考试只包含客观题
-- 教师端「试卷管理/考试管理」页面尚未实现（后端接口已完成，可通过接口或种子数据创建）
+- WebView / APK 需要额外的容器工程，当前前端已按 WebView 兼容方式构建
