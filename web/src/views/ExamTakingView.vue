@@ -1,5 +1,5 @@
 <template>
-  <div class="exam-page">
+  <div class="exam-page theme-purple">
     <header class="exam-header">
       <div class="exam-brand">
         <div class="brand-mark">考</div>
@@ -648,14 +648,14 @@ onUnmounted(() => {
 <style scoped>
 .exam-page {
   min-height: 100vh;
-  background: #f2f5f9;
+  background: var(--page-bg);
   display: flex;
   flex-direction: column;
 }
 
 .exam-header {
   height: 64px;
-  background: #16283c;
+  background: var(--brand-deep);
   color: #fff;
   display: flex;
   align-items: center;
@@ -677,7 +677,7 @@ onUnmounted(() => {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #3d84c6, #6db0e8);
+  background: linear-gradient(135deg, var(--brand-light), var(--brand));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -816,13 +816,13 @@ onUnmounted(() => {
 }
 
 .sheet-item:hover {
-  border-color: #9dc2e3;
+  border-color: var(--brand-border-strong);
 }
 
 .sheet-item.answered {
-  background: #dbeafe;
-  border-color: #93c5fd;
-  color: #1d4ed8;
+  background: var(--sheet-answered-bg);
+  border-color: var(--sheet-answered-border);
+  color: var(--sheet-answered-text);
   font-weight: 600;
 }
 
@@ -857,8 +857,8 @@ onUnmounted(() => {
 }
 
 .dot.answered {
-  background: #dbeafe;
-  border-color: #93c5fd;
+  background: var(--sheet-answered-bg);
+  border-color: var(--sheet-answered-border);
 }
 
 .violation {
@@ -937,14 +937,14 @@ onUnmounted(() => {
 }
 
 .option:hover {
-  border-color: #9dc2e3;
-  background: #f1f7fd;
+  border-color: var(--brand-border-strong);
+  background: var(--brand-soft);
 }
 
 .option.selected {
   border-color: var(--brand);
-  background: #eaf2fa;
-  box-shadow: 0 0 0 2px rgba(31, 78, 121, 0.08);
+  background: var(--brand-soft);
+  box-shadow: 0 0 0 2px var(--brand-ring);
 }
 
 .option-letter {

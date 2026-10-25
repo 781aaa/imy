@@ -1,5 +1,5 @@
 <template>
-  <div class="result-page">
+  <div class="result-page theme-purple">
     <header class="result-header">
       <div class="header-left">
         <el-button text class="back-button" @click="goBack">
@@ -296,7 +296,7 @@ onMounted(async () => {
 <style scoped>
 .result-page {
   min-height: 100vh;
-  background: #f2f5f9;
+  background: var(--page-bg);
   padding-bottom: 40px;
 }
 
@@ -348,14 +348,14 @@ onMounted(async () => {
 }
 
 .hero {
-  background: linear-gradient(135deg, #1f4e79, #2f6fa8 65%, #4a90cc);
+  background: var(--brand-grad);
   border-radius: 16px;
   padding: 26px;
   color: #fff;
   display: flex;
   align-items: center;
   gap: 26px;
-  box-shadow: 0 14px 32px rgba(31, 78, 121, 0.22);
+  box-shadow: 0 14px 32px var(--brand-shadow);
 }
 
 .score-ring {
@@ -564,8 +564,8 @@ onMounted(async () => {
 }
 
 .chosen-mark {
-  background: #e0ecf8;
-  color: #1d4ed8;
+  background: var(--sheet-answered-bg);
+  color: var(--sheet-answered-text);
 }
 
 .correct-mark {

@@ -1,5 +1,8 @@
 <template>
-  <el-container class="layout">
+  <el-container
+    class="layout"
+    :class="{ 'theme-purple': auth.role === 'student' }"
+  >
     <el-aside width="220px" class="aside desktop-aside">
       <div class="brand">
         <div class="brand-mark">考</div>
@@ -293,7 +296,7 @@ async function savePassword() {
 }
 
 .aside {
-  background: linear-gradient(180deg, #16283c 0%, #1f4e79 100%);
+  background: linear-gradient(180deg, var(--brand-deep) 0%, var(--brand) 100%);
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -311,7 +314,7 @@ async function savePassword() {
   width: 38px;
   height: 38px;
   border-radius: 11px;
-  background: linear-gradient(135deg, #3d84c6, #6db0e8);
+  background: linear-gradient(135deg, var(--brand-light), var(--brand));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -409,7 +412,7 @@ async function savePassword() {
 }
 
 .avatar {
-  background: linear-gradient(135deg, #1f4e79, #3d84c6);
+  background: linear-gradient(135deg, var(--brand), var(--brand-light));
   font-size: 13px;
 }
 
@@ -441,14 +444,14 @@ async function savePassword() {
 }
 
 .drawer-brand {
-  background: #16283c;
+  background: var(--brand-deep);
   color: #fff;
   padding: 18px;
 }
 
 .mobile-drawer :deep(.el-drawer__body) {
   padding: 0;
-  background: #1f4e79;
+  background: var(--brand);
 }
 
 @media (max-width: 767px) {

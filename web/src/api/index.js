@@ -67,6 +67,35 @@ export const studentApi = {
     client.get(`/student/sessions/${sessionId}/result`),
 };
 
+export const examApi = {
+  list: (params) => client.get('/exams', { params }),
+  detail: (id) => client.get(`/exams/${id}`),
+  end: (id) => client.post(`/exams/${id}/end`),
+  publishResults: (id) => client.post(`/exams/${id}/publish-results`),
+};
+
+export const gradingApi = {
+  listExams: () => client.get('/grading/exams'),
+  listSessions: (examId, params) =>
+    client.get(`/grading/exams/${examId}/sessions`, { params }),
+  sessionDetail: (sessionId) =>
+    client.get(`/grading/sessions/${sessionId}`),
+  gradeAnswer: (answerId, payload) =>
+    client.patch(`/grading/answers/${answerId}`, payload),
+  finalize: (sessionId) =>
+    client.post(`/grading/sessions/${sessionId}/finalize`),
+};
+
+export const statsApi = {
+  overview: (examId) => client.get(`/stats/exams/${examId}/overview`),
+  scoreSheet: (examId) => client.get(`/stats/exams/${examId}/score-sheet`),
+  ranking: (examId) => client.get(`/stats/exams/${examId}/ranking`),
+  questionAnalysis: (examId) =>
+    client.get(`/stats/exams/${examId}/question-analysis`),
+  knowledgeMastery: (examId) =>
+    client.get(`/stats/exams/${examId}/knowledge-mastery`),
+};
+
 export default {
   auth: authApi,
   users: userApi,
@@ -74,4 +103,7 @@ export default {
   knowledge: knowledgeApi,
   questions: questionApi,
   student: studentApi,
+  exams: examApi,
+  grading: gradingApi,
+  stats: statsApi,
 };

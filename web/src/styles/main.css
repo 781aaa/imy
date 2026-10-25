@@ -2,6 +2,14 @@
   --brand: #1f4e79;
   --brand-light: #2f6fa8;
   --brand-soft: #eaf2fa;
+  --brand-deep: #16283c;
+  --brand-grad: linear-gradient(135deg, #1f4e79, #2f6fa8 60%, #4a90cc);
+  --brand-shadow: rgba(31, 78, 121, 0.22);
+  --brand-ring: rgba(31, 78, 121, 0.1);
+  --brand-border-strong: #9dc2e3;
+  --sheet-answered-bg: #dbeafe;
+  --sheet-answered-border: #93c5fd;
+  --sheet-answered-text: #1d4ed8;
   --text-main: #1f2937;
   --text-sub: #6b7280;
   --page-bg: #f4f6f9;
@@ -10,6 +18,31 @@
   --success: #16a34a;
   --warning: #d97706;
   --danger: #dc2626;
+}
+
+/* 学生端紫色主题：在学生布局、答题页、成绩页的根节点加 .theme-purple */
+.theme-purple {
+  --brand: #6d28d9;
+  --brand-light: #8b5cf6;
+  --brand-soft: #f3e8ff;
+  --brand-deep: #2e1065;
+  --brand-grad: linear-gradient(135deg, #4c1d95, #6d28d9 60%, #8b5cf6);
+  --brand-shadow: rgba(109, 40, 217, 0.24);
+  --brand-ring: rgba(109, 40, 217, 0.12);
+  --brand-border-strong: #c4b5fd;
+  --sheet-answered-bg: #ede9fe;
+  --sheet-answered-border: #c4b5fd;
+  --sheet-answered-text: #6d28d9;
+  --page-bg: #f8f5fc;
+  --border: #ebe3f7;
+
+  --el-color-primary: #6d28d9;
+  --el-color-primary-light-3: #8b5cf6;
+  --el-color-primary-light-5: #a78bfa;
+  --el-color-primary-light-7: #c4b5fd;
+  --el-color-primary-light-8: #ddd6fe;
+  --el-color-primary-light-9: #f3e8ff;
+  --el-color-primary-dark-2: #5b21b6;
 }
 
 * {

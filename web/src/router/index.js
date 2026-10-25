@@ -58,13 +58,13 @@ const routes = [
       {
         path: 'grading',
         name: 'grading',
-        component: () => import('../views/PlaceholderView.vue'),
+        component: () => import('../views/GradingView.vue'),
         meta: { title: '阅卷中心', roles: ['admin', 'teacher'] },
       },
       {
         path: 'stats',
         name: 'stats',
-        component: () => import('../views/PlaceholderView.vue'),
+        component: () => import('../views/StatsView.vue'),
         meta: { title: '统计分析', roles: ['admin', 'teacher'] },
       },
       {

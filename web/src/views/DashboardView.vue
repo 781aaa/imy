@@ -190,7 +190,7 @@ onMounted(async () => {
 
 <style scoped>
 .hero {
-  background: linear-gradient(135deg, #1f4e79, #2f6fa8 60%, #4a90cc);
+  background: var(--brand-grad);
   border-radius: 16px;
   padding: 24px;
   color: #fff;
@@ -199,7 +199,7 @@ onMounted(async () => {
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 18px;
-  box-shadow: 0 12px 28px rgba(31, 78, 121, 0.22);
+  box-shadow: 0 12px 28px var(--brand-shadow);
 }
 
 .hero-title {
@@ -296,7 +296,7 @@ onMounted(async () => {
 }
 
 .quick-item:hover {
-  border-color: #9dc2e3;
+  border-color: var(--brand-border-strong);
   background: #f1f7fd;
   transform: translateY(-1px);
 }
