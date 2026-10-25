@@ -587,7 +587,7 @@ function handleBeforeUnload(event) {
 }
 
 function goHome() {
-  router.push({ name: 'mock-home' });
+  router.push({ name: 'mock' });
 }
 
 onMounted(async () => {

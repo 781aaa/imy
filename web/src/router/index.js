@@ -81,7 +81,7 @@ const routes = [
       },
       {
         path: 'mock',
-        name: 'mock-home',
+        name: 'mock',
         component: () => import('../views/MockExamHomeView.vue'),
         meta: { title: '模拟考试', roles: ['student'] },
       },
