@@ -19,7 +19,7 @@ function toArray(value) {
 
 function normalizeChoice(value) {
   return toArray(value)
-    .map((item) => String(item).trim())
+    .map((item) => String(item).trim().toUpperCase())
     .filter(Boolean)
     .sort();
 }
