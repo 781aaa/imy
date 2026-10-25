@@ -67,11 +67,45 @@ export const studentApi = {
     client.get(`/student/sessions/${sessionId}/result`),
 };
 
+export const paperApi = {
+  list: (params) => client.get('/papers', { params }),
+  detail: (id) => client.get(`/papers/${id}`),
+  create: (payload) => client.post('/papers', payload),
+  update: (id, payload) => client.patch(`/papers/${id}`, payload),
+  remove: (id) => client.delete(`/papers/${id}`),
+  addSection: (id, payload) => client.post(`/papers/${id}/sections`, payload),
+  updateSection: (id, sectionId, payload) =>
+    client.patch(`/papers/${id}/sections/${sectionId}`, payload),
+  removeSection: (id, sectionId) =>
+    client.delete(`/papers/${id}/sections/${sectionId}`),
+  addQuestion: (id, payload) =>
+    client.post(`/papers/${id}/questions`, payload),
+  updateQuestion: (id, pqId, payload) =>
+    client.patch(`/papers/${id}/questions/${pqId}`, payload),
+  removeQuestion: (id, pqId) =>
+    client.delete(`/papers/${id}/questions/${pqId}`),
+  publish: (id) => client.post(`/papers/${id}/publish`),
+  duplicate: (id) => client.post(`/papers/${id}/duplicate`),
+  random: (payload) => client.post('/papers/random', payload),
+};
+
 export const examApi = {
   list: (params) => client.get('/exams', { params }),
   detail: (id) => client.get(`/exams/${id}`),
+  create: (payload) => client.post('/exams', payload),
+  update: (id, payload) => client.patch(`/exams/${id}`, payload),
+  remove: (id) => client.delete(`/exams/${id}`),
+  schedule: (id) => client.post(`/exams/${id}/schedule`),
+  assignClasses: (id, classIds) =>
+    client.post(`/exams/${id}/classes`, { classIds }),
+  removeClass: (id, classId) =>
+    client.delete(`/exams/${id}/classes/${classId}`),
   end: (id) => client.post(`/exams/${id}/end`),
   publishResults: (id) => client.post(`/exams/${id}/publish-results`),
+};
+
+export const auditApi = {
+  list: (params) => client.get('/audit-logs', { params }),
 };
 
 export const gradingApi = {
@@ -125,9 +159,11 @@ export default {
   knowledge: knowledgeApi,
   questions: questionApi,
   student: studentApi,
+  papers: paperApi,
   exams: examApi,
   grading: gradingApi,
   stats: statsApi,
   practice: practiceApi,
   mock: mockApi,
+  audit: auditApi,
 };

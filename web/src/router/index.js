@@ -28,13 +28,13 @@ const routes = [
       {
         path: 'classes',
         name: 'classes',
-        component: () => import('../views/PlaceholderView.vue'),
+        component: () => import('../views/ClassesView.vue'),
         meta: { title: '班级管理', roles: ['admin', 'teacher'] },
       },
       {
         path: 'knowledge',
         name: 'knowledge',
-        component: () => import('../views/PlaceholderView.vue'),
+        component: () => import('../views/KnowledgeView.vue'),
         meta: { title: '知识点管理', roles: ['admin', 'teacher'] },
       },
       {
@@ -46,13 +46,13 @@ const routes = [
       {
         path: 'papers',
         name: 'papers',
-        component: () => import('../views/PlaceholderView.vue'),
+        component: () => import('../views/PapersView.vue'),
         meta: { title: '试卷管理', roles: ['admin', 'teacher'] },
       },
       {
         path: 'exams',
         name: 'exams',
-        component: () => import('../views/PlaceholderView.vue'),
+        component: () => import('../views/ExamsView.vue'),
         meta: { title: '考试管理', roles: ['admin', 'teacher'] },
       },
       {
@@ -70,7 +70,7 @@ const routes = [
       {
         path: 'audit',
         name: 'audit',
-        component: () => import('../views/PlaceholderView.vue'),
+        component: () => import('../views/AuditView.vue'),
         meta: { title: '审计日志', roles: ['admin'] },
       },
       {
@@ -102,6 +102,12 @@ const routes = [
         name: 'my-results',
         component: () => import('../views/MyResultsView.vue'),
         meta: { title: '我的成绩', roles: ['student'] },
+      },
+      {
+        path: 'study-report',
+        name: 'study-report',
+        component: () => import('../views/StudyReportView.vue'),
+        meta: { title: '学习报告', roles: ['student'] },
       },
     ],
   },

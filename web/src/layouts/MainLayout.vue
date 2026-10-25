@@ -161,6 +161,7 @@ import {
   Notebook,
   School,
   Timer,
+  TrendCharts,
   User,
   Warning,
 } from '@element-plus/icons-vue';
@@ -231,6 +232,7 @@ const ALL_MENUS = {
     { name: 'practice', label: '练习中心', icon: Notebook },
     { name: 'mock', label: '模拟考试', icon: Timer },
     { name: 'wrong-book', label: '错题本', icon: Warning },
+    { name: 'study-report', label: '学习报告', icon: TrendCharts },
     { name: 'my-exams', label: '我的考试', icon: Calendar },
     { name: 'my-results', label: '我的成绩', icon: DataAnalysis },
   ],

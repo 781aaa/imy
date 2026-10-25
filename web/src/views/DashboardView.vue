@@ -93,6 +93,8 @@ import {
   EditPen,
   Notebook,
   School,
+  Timer,
+  TrendCharts,
   User,
   Warning,
 } from '@element-plus/icons-vue';
@@ -194,9 +196,9 @@ const quickLinks = computed(() => {
   }
   return [
     { name: 'practice', label: '练习中心', desc: '刷题与解析', icon: Notebook },
+    { name: 'mock', label: '模拟考试', desc: '限时自测', icon: Timer },
     { name: 'wrong-book', label: '错题本', desc: '复习错题', icon: Warning },
-    { name: 'my-exams', label: '我的考试', desc: '参加考试', icon: Calendar },
-    { name: 'my-results', label: '我的成绩', desc: '查看分数', icon: DataAnalysis },
+    { name: 'study-report', label: '学习报告', desc: '趋势与薄弱项', icon: TrendCharts },
   ];
 });
 
