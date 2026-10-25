@@ -16,6 +16,15 @@ function enqueueExamSubmitted(payload) {
   });
 }
 
+function enqueueExamGraded(payload) {
+  return supervisorRepository.createEvent({
+    eventType: 'exam_graded',
+    studentId: payload.studentId,
+    payload,
+    createdAt: Date.now(),
+  });
+}
+
 function toRecord(row) {
   const totalScore = Number(row.total_score || 0);
   const passScore = Number(row.pass_score || 0);
@@ -277,6 +286,7 @@ function getHealth() {
 
 module.exports = {
   enqueueExamSubmitted,
+  enqueueExamGraded,
   getOverview,
   listRecords,
   listEvents,

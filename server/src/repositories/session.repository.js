@@ -29,7 +29,7 @@ function findById(id) {
 function findWithExam(id) {
   return get(
     `SELECT es.*, e.title AS exam_title, e.paper_id, e.pass_score,
-            e.status AS exam_status, e.start_at, e.end_at,
+            e.status AS exam_status, e.start_at, e.end_at, e.created_by,
             p.title AS paper_title, u.real_name AS student_name,
             u.username AS student_username
      FROM exam_sessions es
