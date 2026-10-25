@@ -20,6 +20,11 @@ const MIGRATIONS = [
     name: 'practice_records',
     file: 'schema_v3.sql',
   },
+  {
+    version: 4,
+    name: 'mock_exams',
+    file: 'schema_v4.sql',
+  },
 ];
 
 function ensureMigrationTable(db) {

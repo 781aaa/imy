@@ -13,6 +13,7 @@ const supervisorRoutes = require('./supervisor.routes');
 const gradingRoutes = require('./grading.routes');
 const statsRoutes = require('./stats.routes');
 const practiceRoutes = require('./practice.routes');
+const mockExamRoutes = require('./mockExam.routes');
 
 const router = express.Router();
 
@@ -28,5 +29,6 @@ router.use('/supervisor', supervisorRoutes);
 router.use('/grading', gradingRoutes);
 router.use('/stats', statsRoutes);
 router.use('/practice', practiceRoutes);
+router.use('/mock-exams', mockExamRoutes);
 
 module.exports = router;
