@@ -94,6 +94,7 @@ import {
   Notebook,
   School,
   User,
+  Warning,
 } from '@element-plus/icons-vue';
 import { useAuthStore } from '../stores/auth';
 import api from '../api';
@@ -103,6 +104,15 @@ const router = useRouter();
 
 const stats = ref({ total: 0, admin: 0, teacher: 0, student: 0 });
 const classes = ref([]);
+const practiceStats = ref({
+  totalAnswered: 0,
+  correctCount: 0,
+  accuracy: 0,
+  todayAnswered: 0,
+  streakDays: 0,
+  daily: [],
+  weakTopics: [],
+});
 
 const greeting = computed(() => {
   const hour = new Date().getHours();
@@ -141,10 +151,28 @@ const teacherStats = computed(() => [
 ]);
 
 const studentStats = computed(() => [
-  { label: '待参加考试', value: '—', hint: 'D4 上线' },
-  { label: '已完成考试', value: '—', hint: 'D5 上线' },
-  { label: '平均分', value: '—', hint: 'D5 上线' },
-  { label: '我的班级', value: classes.value.length, hint: '已加入' },
+  {
+    label: '今日练习',
+    value: practiceStats.value.todayAnswered,
+    hint: '已做题目',
+  },
+  {
+    label: '累计正确率',
+    value: practiceStats.value.totalAnswered
+      ? `${Math.round(practiceStats.value.accuracy * 100)}%`
+      : '—',
+    hint: `共练 ${practiceStats.value.totalAnswered} 题`,
+  },
+  {
+    label: '连续练习',
+    value: `${practiceStats.value.streakDays} 天`,
+    hint: '保持节奏',
+  },
+  {
+    label: '我的班级',
+    value: classes.value.length,
+    hint: '已加入',
+  },
 ]);
 
 const quickLinks = computed(() => {
@@ -165,6 +193,8 @@ const quickLinks = computed(() => {
     ];
   }
   return [
+    { name: 'practice', label: '练习中心', desc: '刷题与解析', icon: Notebook },
+    { name: 'wrong-book', label: '错题本', desc: '复习错题', icon: Warning },
     { name: 'my-exams', label: '我的考试', desc: '参加考试', icon: Calendar },
     { name: 'my-results', label: '我的成绩', desc: '查看分数', icon: DataAnalysis },
   ];
@@ -183,6 +213,14 @@ onMounted(async () => {
       stats.value = await api.users.statistics();
     } catch (error) {
       // 概览数据失败不影响页面
+    }
+  }
+
+  if (auth.role === 'student') {
+    try {
+      practiceStats.value = await api.practice.stats();
+    } catch (error) {
+      // 练习统计失败不影响页面
     }
   }
 });

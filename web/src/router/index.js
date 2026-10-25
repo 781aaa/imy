@@ -74,6 +74,18 @@ const routes = [
         meta: { title: '审计日志', roles: ['admin'] },
       },
       {
+        path: 'practice',
+        name: 'practice',
+        component: () => import('../views/PracticeView.vue'),
+        meta: { title: '练习中心', roles: ['student'] },
+      },
+      {
+        path: 'wrong-book',
+        name: 'wrong-book',
+        component: () => import('../views/WrongBookView.vue'),
+        meta: { title: '错题本', roles: ['student'] },
+      },
+      {
         path: 'my-exams',
         name: 'my-exams',
         component: () => import('../views/MyExamsView.vue'),

@@ -96,6 +96,17 @@ export const statsApi = {
     client.get(`/stats/exams/${examId}/knowledge-mastery`),
 };
 
+export const practiceApi = {
+  levels: () => client.get('/practice/levels'),
+  questions: (params) => client.get('/practice/questions', { params }),
+  submit: (payload) => client.post('/practice/answers', payload),
+  stats: () => client.get('/practice/stats'),
+  wrongQuestions: (params) =>
+    client.get('/practice/wrong-questions', { params }),
+  removeWrong: (questionId) =>
+    client.delete(`/practice/wrong-questions/${questionId}`),
+};
+
 export default {
   auth: authApi,
   users: userApi,
@@ -106,4 +117,5 @@ export default {
   exams: examApi,
   grading: gradingApi,
   stats: statsApi,
+  practice: practiceApi,
 };
