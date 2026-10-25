@@ -4,7 +4,7 @@
       <div>
         <h2 class="page-title">错题本</h2>
         <div class="page-subtitle">
-          练习中答错的题会自动收集，标记掌握后会移除
+          练习中答错的题会自动收集；最近一次答对或标记掌握后会自动移出
         </div>
       </div>
       <div class="header-actions">
@@ -14,6 +14,14 @@
           clearable
           style="width: 220px"
         />
+        <el-button
+          type="primary"
+          plain
+          :disabled="redoItems.length === 0"
+          @click="redoAll"
+        >
+          重做全部（{{ redoItems.length }}）
+        </el-button>
         <el-button :loading="loading" @click="load">刷新</el-button>
       </div>
     </div>
@@ -93,7 +101,9 @@
             <span class="answer-text">{{ formatAnswer(item, item.userAnswer) }}</span>
           </div>
           <div class="answer-row">
-            <span class="answer-label">正确答案</span>
+            <span class="answer-label">
+              {{ item.type === 'short' ? '参考答案' : '正确答案' }}
+            </span>
             <span class="answer-text correct-answer">
               {{ formatAnswer(item, item.correctAnswer) }}
             </span>
@@ -106,7 +116,15 @@
         </div>
 
         <div class="wrong-actions">
-          <el-button link type="primary" @click="markMastered(item)">
+          <el-button
+            v-if="item.type !== 'short'"
+            link
+            type="primary"
+            @click="redoOne(item)"
+          >
+            重做这道
+          </el-button>
+          <el-button link type="info" @click="markMastered(item)">
             标记已掌握
           </el-button>
         </div>
@@ -141,6 +159,10 @@ const filteredItems = computed(() => {
       ),
   );
 });
+
+const redoItems = computed(() =>
+  filteredItems.value.filter((item) => item.type !== 'short'),
+);
 
 function stars(level) {
   const value = Math.max(1, Math.min(5, Number(level) || 1));
@@ -211,6 +233,23 @@ async function load() {
   } finally {
     loading.value = false;
   }
+}
+
+function redoAll() {
+  if (redoItems.value.length === 0) return;
+  router.push({
+    name: 'practice',
+    query: {
+      redo: redoItems.value.map((item) => item.questionId).join(','),
+    },
+  });
+}
+
+function redoOne(item) {
+  router.push({
+    name: 'practice',
+    query: { redo: String(item.questionId) },
+  });
 }
 
 async function markMastered(item) {

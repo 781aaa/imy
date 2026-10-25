@@ -160,6 +160,7 @@ import {
   Menu,
   Notebook,
   School,
+  Timer,
   User,
   Warning,
 } from '@element-plus/icons-vue';
@@ -228,6 +229,7 @@ const ALL_MENUS = {
   student: [
     { name: 'dashboard', label: '概览', icon: HomeFilled },
     { name: 'practice', label: '练习中心', icon: Notebook },
+    { name: 'mock-home', label: '模拟考试', icon: Timer },
     { name: 'wrong-book', label: '错题本', icon: Warning },
     { name: 'my-exams', label: '我的考试', icon: Calendar },
     { name: 'my-results', label: '我的成绩', icon: DataAnalysis },

@@ -80,6 +80,12 @@ const routes = [
         meta: { title: '练习中心', roles: ['student'] },
       },
       {
+        path: 'mock',
+        name: 'mock-home',
+        component: () => import('../views/MockExamHomeView.vue'),
+        meta: { title: '模拟考试', roles: ['student'] },
+      },
+      {
         path: 'wrong-book',
         name: 'wrong-book',
         component: () => import('../views/WrongBookView.vue'),
@@ -104,6 +110,12 @@ const routes = [
     name: 'exam-taking',
     component: () => import('../views/ExamTakingView.vue'),
     meta: { title: '在线考试', roles: ['student'] },
+  },
+  {
+    path: '/mock/:mockExamId',
+    name: 'mock-exam',
+    component: () => import('../views/MockExamView.vue'),
+    meta: { title: '模拟考试', roles: ['student'] },
   },
   {
     path: '/result/:sessionId',

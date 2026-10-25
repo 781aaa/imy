@@ -100,11 +100,22 @@ export const practiceApi = {
   levels: () => client.get('/practice/levels'),
   questions: (params) => client.get('/practice/questions', { params }),
   submit: (payload) => client.post('/practice/answers', payload),
+  selfAssess: (recordId, mastered) =>
+    client.patch(`/practice/records/${recordId}/self-assess`, { mastered }),
   stats: () => client.get('/practice/stats'),
   wrongQuestions: (params) =>
     client.get('/practice/wrong-questions', { params }),
   removeWrong: (questionId) =>
     client.delete(`/practice/wrong-questions/${questionId}`),
+};
+
+export const mockApi = {
+  create: (payload) => client.post('/mock-exams', payload),
+  list: () => client.get('/mock-exams'),
+  detail: (id) => client.get(`/mock-exams/${id}`),
+  saveAnswers: (id, answers) =>
+    client.patch(`/mock-exams/${id}/answers`, { answers }),
+  submit: (id) => client.post(`/mock-exams/${id}/submit`),
 };
 
 export default {
@@ -118,4 +129,5 @@ export default {
   grading: gradingApi,
   stats: statsApi,
   practice: practiceApi,
+  mock: mockApi,
 };

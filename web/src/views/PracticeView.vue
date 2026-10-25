@@ -57,6 +57,13 @@
       </div>
 
       <div class="card setup-card">
+        <div class="mode-switch">
+          <el-radio-group v-model="practiceMode" size="small">
+            <el-radio-button value="objective">客观题</el-radio-button>
+            <el-radio-button value="subjective">主观题（翻译 / 写作）</el-radio-button>
+          </el-radio-group>
+        </div>
+
         <div class="setup-grid">
           <div class="field">
             <label>知识点</label>
@@ -69,9 +76,9 @@
               <el-option
                 v-for="topic in currentTopics"
                 :key="topic.id"
-                :label="`${topic.name}（${topic.questionCount}）`"
+                :label="practiceMode === 'subjective' ? topic.name : `${topic.name}（${topic.questionCount}）`"
                 :value="topic.name"
-                :disabled="topic.questionCount === 0"
+                :disabled="practiceMode === 'objective' && topic.questionCount === 0"
               />
             </el-select>
           </div>
@@ -113,8 +120,7 @@
         </div>
 
         <div class="setup-hint">
-          练习模式只包含单选、多选、判断、填空题，提交后立即显示答案和解析。
-          翻译与写作请在考试模式中练习。
+          客观题提交后立即判分并显示解析；主观题提交后显示参考答案，由你自己对照评估。
         </div>
       </div>
     </template>
@@ -124,7 +130,7 @@
       <div class="practice-bar">
         <div class="bar-left">
           <span class="progress-text">第 {{ currentIndex + 1 }} / {{ questions.length }} 题</span>
-          <span class="text-sub">{{ form.level }}{{ form.topic ? ` · ${form.topic}` : '' }}</span>
+          <span class="text-sub">{{ sessionLabel }}</span>
         </div>
         <el-progress
           :percentage="progressPercent"
@@ -160,13 +166,13 @@
             type="button"
             class="option"
             :class="optionClass(current, option.label)"
-            :disabled="isSubmitted(current)"
+            :disabled="isLocked(current)"
             @click="chooseOption(current, option.label)"
           >
             <span class="option-letter">{{ option.label }}</span>
             <span class="option-content">{{ option.content }}</span>
             <span
-              v-if="isSubmitted(current) && isCorrectOption(current, option.label)"
+              v-if="isLocked(current) && isCorrectOption(current, option.label)"
               class="option-mark"
             >
               正确答案
@@ -182,7 +188,7 @@
             type="button"
             class="option"
             :class="booleanClass(current, 'true')"
-            :disabled="isSubmitted(current)"
+            :disabled="isLocked(current)"
             @click="setAnswer(current, 'true')"
           >
             <span class="option-letter">对</span>
@@ -192,7 +198,7 @@
             type="button"
             class="option"
             :class="booleanClass(current, 'false')"
-            :disabled="isSubmitted(current)"
+            :disabled="isLocked(current)"
             @click="setAnswer(current, 'false')"
           >
             <span class="option-letter">错</span>
@@ -200,48 +206,96 @@
           </button>
         </div>
 
-        <div v-else class="fill-area">
+        <div v-else-if="current.type === 'fill'" class="fill-area">
           <div v-for="i in current.blankCount" :key="i" class="fill-row">
             <span class="fill-label">第 {{ i }} 空</span>
             <el-input
               :model-value="fillValue(current, i - 1)"
-              :disabled="isSubmitted(current)"
+              :disabled="isLocked(current)"
               placeholder="请输入答案"
               @update:model-value="setFill(current, i - 1, $event)"
             />
           </div>
         </div>
 
-        <div v-if="isSubmitted(current)" class="feedback" :class="feedbackClass(current)">
-          <div class="feedback-head">
-            <el-icon>
-              <CircleCheck v-if="feedback[current.questionId].isCorrect" />
-              <CircleClose v-else />
-            </el-icon>
-            <strong>
-              {{ feedback[current.questionId].isCorrect ? '回答正确' : '回答错误' }}
-            </strong>
-            <span class="text-sub">
-              正确答案：{{ formatAnswer(current, feedback[current.questionId].correctAnswer) }}
-            </span>
+        <div v-else class="short-area">
+          <el-input
+            type="textarea"
+            :rows="7"
+            :model-value="answers[current.questionId] || ''"
+            :disabled="isLocked(current)"
+            placeholder="写下你的翻译或作文"
+            @update:model-value="setShort(current, $event)"
+          />
+          <div class="char-count">
+            {{ String(answers[current.questionId] || '').length }} 字
           </div>
-          <div v-if="feedback[current.questionId].analysis" class="analysis">
-            {{ feedback[current.questionId].analysis }}
-          </div>
+        </div>
+
+        <div v-if="hasFeedback(current)" class="feedback" :class="feedbackClass(current)">
+          <template v-if="feedback[current.questionId].requiresSelfCheck">
+            <div class="feedback-head">
+              <strong>参考答案</strong>
+            </div>
+            <div class="reference-answer">
+              {{ formatAnswer(current, feedback[current.questionId].referenceAnswer) }}
+            </div>
+            <div v-if="feedback[current.questionId].analysis" class="analysis">
+              {{ feedback[current.questionId].analysis }}
+            </div>
+
+            <div v-if="!hasSelfAssessed(current)" class="self-assess">
+              <span>对照参考答案，你觉得自己写对了吗？</span>
+              <div class="self-buttons">
+                <el-button type="success" plain @click="selfAssess(current, true)">
+                  我写对了
+                </el-button>
+                <el-button type="warning" plain @click="selfAssess(current, false)">
+                  还需要练
+                </el-button>
+              </div>
+            </div>
+            <div v-else class="assessed-tag">
+              <el-tag
+                :type="feedback[current.questionId].isCorrect ? 'success' : 'warning'"
+                effect="plain"
+              >
+                {{ feedback[current.questionId].isCorrect ? '已记录：掌握' : '已记录：需要继续练习' }}
+              </el-tag>
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="feedback-head">
+              <el-icon>
+                <CircleCheck v-if="feedback[current.questionId].isCorrect" />
+                <CircleClose v-else />
+              </el-icon>
+              <strong>
+                {{ feedback[current.questionId].isCorrect ? '回答正确' : '回答错误' }}
+              </strong>
+              <span class="text-sub">
+                正确答案：{{ formatAnswer(current, feedback[current.questionId].correctAnswer) }}
+              </span>
+            </div>
+            <div v-if="feedback[current.questionId].analysis" class="analysis">
+              {{ feedback[current.questionId].analysis }}
+            </div>
+          </template>
         </div>
 
         <div class="question-actions">
           <el-button
-            v-if="!isSubmitted(current)"
+            v-if="!hasFeedback(current)"
             type="primary"
             :loading="submitting"
             :disabled="!hasAnswer(current)"
             @click="submitCurrent"
           >
-            提交答案
+            {{ current.type === 'short' ? '提交并查看参考答案' : '提交答案' }}
           </el-button>
           <el-button
-            v-else
+            v-else-if="canProceed(current)"
             type="primary"
             @click="nextQuestion"
           >
@@ -290,14 +344,17 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { CircleCheck, CircleClose } from '@element-plus/icons-vue';
 import api from '../api';
 
+const route = useRoute();
 const router = useRouter();
 
 const view = ref('setup');
+const practiceMode = ref('objective');
+const sessionLabel = ref('');
 const levels = ref([]);
 const stats = ref({
   totalAnswered: 0,
@@ -358,6 +415,26 @@ function isSubmitted(question) {
   return Boolean(question && submitted[question.questionId]);
 }
 
+function hasFeedback(question) {
+  return Boolean(question && feedback[question.questionId]);
+}
+
+function isLocked(question) {
+  return hasFeedback(question);
+}
+
+function hasSelfAssessed(question) {
+  const item = feedback[question.questionId];
+  return Boolean(item && item.assessed);
+}
+
+function canProceed(question) {
+  const item = feedback[question.questionId];
+  if (!item) return false;
+  if (item.requiresSelfCheck) return Boolean(item.assessed);
+  return true;
+}
+
 function hasAnswer(question) {
   const value = answers[question.questionId];
   if (question.type === 'multiple' || question.type === 'fill') {
@@ -387,7 +464,7 @@ function optionClass(question, label) {
   const classes = {
     selected: isOptionSelected(question, label),
   };
-  if (isSubmitted(question)) {
+  if (hasFeedback(question)) {
     classes.correct = isCorrectOption(question, label);
     classes.wrong = isOptionSelected(question, label)
       && !isCorrectOption(question, label);
@@ -399,7 +476,7 @@ function booleanClass(question, value) {
   const classes = {
     selected: answers[question.questionId] === value,
   };
-  if (isSubmitted(question)) {
+  if (hasFeedback(question)) {
     classes.correct = isCorrectOption(question, value);
     classes.wrong = answers[question.questionId] === value
       && !isCorrectOption(question, value);
@@ -408,7 +485,7 @@ function booleanClass(question, value) {
 }
 
 function chooseOption(question, label) {
-  if (isSubmitted(question)) return;
+  if (isLocked(question)) return;
 
   if (question.type === 'single') {
     answers[question.questionId] = label;
@@ -425,7 +502,7 @@ function chooseOption(question, label) {
 }
 
 function setAnswer(question, value) {
-  if (isSubmitted(question)) return;
+  if (isLocked(question)) return;
   answers[question.questionId] = value;
 }
 
@@ -436,12 +513,17 @@ function fillValue(question, index) {
 }
 
 function setFill(question, index, value) {
-  if (isSubmitted(question)) return;
+  if (isLocked(question)) return;
   const currentValue = Array.isArray(answers[question.questionId])
     ? answers[question.questionId].slice()
     : Array.from({ length: question.blankCount }, () => '');
   currentValue[index] = value;
   answers[question.questionId] = currentValue;
+}
+
+function setShort(question, value) {
+  if (isLocked(question)) return;
+  answers[question.questionId] = value;
 }
 
 function buildAnswer(question) {
@@ -468,9 +550,10 @@ function formatAnswer(question, value) {
 }
 
 function feedbackClass(question) {
-  return feedback[question.questionId] && feedback[question.questionId].isCorrect
-    ? 'correct'
-    : 'wrong';
+  const item = feedback[question.questionId];
+  if (!item) return '';
+  if (item.requiresSelfCheck && !item.assessed) return 'neutral';
+  return item.isCorrect ? 'correct' : 'wrong';
 }
 
 async function loadLevels() {
@@ -501,6 +584,29 @@ async function reloadAll() {
   await Promise.all([loadLevels(), loadStats()]);
 }
 
+function initSession(items, label) {
+  questions.value = items;
+  currentIndex.value = 0;
+  correctCount.value = 0;
+  sessionLabel.value = label;
+
+  for (const key of Object.keys(answers)) delete answers[key];
+  for (const key of Object.keys(feedback)) delete feedback[key];
+  for (const key of Object.keys(submitted)) delete submitted[key];
+
+  for (const question of items) {
+    if (question.type === 'multiple') answers[question.questionId] = [];
+    else if (question.type === 'fill') {
+      answers[question.questionId] = Array.from(
+        { length: question.blankCount || 1 },
+        () => '',
+      );
+    } else answers[question.questionId] = '';
+  }
+
+  view.value = 'practice';
+}
+
 async function startPractice() {
   if (!form.level) {
     ElMessage.warning('请先选择题库');
@@ -509,38 +615,52 @@ async function startPractice() {
 
   loadingQuestions.value = true;
   try {
-    const result = await api.practice.questions({
+    const params = {
       level: form.level,
       topic: form.topic || undefined,
       count: form.count,
       difficultyMin: form.difficultyMin,
       difficultyMax: form.difficultyMax,
-    });
+    };
+
+    if (practiceMode.value === 'subjective') {
+      params.types = 'short';
+    }
+
+    const result = await api.practice.questions(params);
 
     if (!result.items || result.items.length === 0) {
       ElMessage.warning(result.message || '没有符合条件的题目');
       return;
     }
 
-    questions.value = result.items;
-    currentIndex.value = 0;
-    correctCount.value = 0;
+    const label = `${form.level}${form.topic ? ` · ${form.topic}` : ''}${
+      practiceMode.value === 'subjective' ? ' · 主观题' : ''
+    }`;
+    initSession(result.items, label);
+  } catch (error) {
+    // 错误提示由拦截器处理
+  } finally {
+    loadingQuestions.value = false;
+  }
+}
 
-    for (const key of Object.keys(answers)) delete answers[key];
-    for (const key of Object.keys(feedback)) delete feedback[key];
-    for (const key of Object.keys(submitted)) delete submitted[key];
+async function startRedo(ids) {
+  if (!ids.length) return;
 
-    for (const question of result.items) {
-      if (question.type === 'multiple') answers[question.questionId] = [];
-      else if (question.type === 'fill') {
-        answers[question.questionId] = Array.from(
-          { length: question.blankCount || 1 },
-          () => '',
-        );
-      } else answers[question.questionId] = '';
+  loadingQuestions.value = true;
+  try {
+    const result = await api.practice.questions({
+      questionIds: ids.join(','),
+      count: ids.length,
+    });
+
+    if (!result.items || result.items.length === 0) {
+      ElMessage.warning(result.message || '选中的错题暂时无法重做');
+      return;
     }
 
-    view.value = 'practice';
+    initSession(result.items, '错题重做');
   } catch (error) {
     // 错误提示由拦截器处理
   } finally {
@@ -560,12 +680,34 @@ async function submitCurrent() {
     });
 
     feedback[question.questionId] = result;
+
+    if (result.requiresSelfCheck) {
+      feedback[question.questionId].assessed = false;
+      return;
+    }
+
     submitted[question.questionId] = true;
     if (result.isCorrect) correctCount.value += 1;
   } catch (error) {
     // 错误提示由拦截器处理
   } finally {
     submitting.value = false;
+  }
+}
+
+async function selfAssess(question, mastered) {
+  const item = feedback[question.questionId];
+  if (!item || !item.recordId) return;
+
+  try {
+    await api.practice.selfAssess(item.recordId, mastered);
+    item.isCorrect = mastered;
+    item.assessed = true;
+    submitted[question.questionId] = true;
+    if (mastered) correctCount.value += 1;
+    ElMessage.success(mastered ? '已记录：掌握' : '已记录：需要继续练');
+  } catch (error) {
+    // 错误提示由拦截器处理
   }
 }
 
@@ -602,10 +744,75 @@ function goWrongBook() {
   router.push({ name: 'wrong-book' });
 }
 
-onMounted(reloadAll);
+onMounted(async () => {
+  await reloadAll();
+
+  const redo = typeof route.query.redo === 'string' ? route.query.redo : '';
+  if (redo) {
+    const ids = redo
+      .split(',')
+      .map((item) => Number(item))
+      .filter((item) => Number.isInteger(item) && item > 0);
+
+    if (ids.length > 0) {
+      await startRedo(ids);
+    }
+  }
+});
 </script>
 
 <style scoped>
+.mode-switch {
+  margin-bottom: 14px;
+}
+
+.short-area {
+  position: relative;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 11px;
+  color: var(--text-sub);
+  margin-top: 6px;
+}
+
+.feedback.neutral {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+}
+
+.reference-answer {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.self-assess {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.self-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.assessed-tag {
+  margin-top: 12px;
+}
+
 .practice-stats {
   display: flex;
   gap: 10px;
