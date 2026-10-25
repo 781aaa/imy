@@ -125,21 +125,39 @@ function createRecord(data) {
 }
 
 function listWrongLatest(studentId, limit = 100) {
+  // 以每道题「最近一次作答」为准：最近一次答对就自动从错题本移除
   return all(
     `SELECT * FROM (
        SELECT pr.*,
          ROW_NUMBER() OVER (
            PARTITION BY question_id ORDER BY answered_at DESC, id DESC
          ) AS rn,
-         COUNT(*) OVER (PARTITION BY question_id) AS wrong_count
+         SUM(CASE WHEN is_correct = 0 THEN 1 ELSE 0 END) OVER (
+           PARTITION BY question_id
+         ) AS wrong_count
        FROM practice_records pr
-       WHERE student_id = ? AND is_correct = 0
+       WHERE student_id = ?
      )
-     WHERE rn = 1
+     WHERE rn = 1 AND is_correct = 0
      ORDER BY answered_at DESC
      LIMIT ?`,
     [Number(studentId), Number(limit)],
   );
+}
+
+function findRecordById(id, studentId) {
+  return get(
+    'SELECT * FROM practice_records WHERE id = ? AND student_id = ?',
+    [Number(id), Number(studentId)],
+  );
+}
+
+function updateSelfAssessment(recordId, isCorrect) {
+  const result = run(
+    'UPDATE practice_records SET is_correct = ? WHERE id = ?',
+    [isCorrect ? 1 : 0, Number(recordId)],
+  );
+  return Number(result.changes) > 0;
 }
 
 function countAnswered(studentId) {
@@ -193,6 +211,8 @@ module.exports = {
   selectQuestions,
   createRecord,
   listWrongLatest,
+  findRecordById,
+  updateSelfAssessment,
   countAnswered,
   countCorrect,
   countSince,

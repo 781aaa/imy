@@ -10,6 +10,8 @@ const {
   submitPracticeSchema,
   wrongQuerySchema,
   questionParamSchema,
+  selfAssessSchema,
+  recordIdParamSchema,
 } = require('../validators/practice.validator');
 
 const router = express.Router();
@@ -29,6 +31,12 @@ router.post(
   '/answers',
   validate({ body: submitPracticeSchema }),
   practiceController.submit,
+);
+
+router.patch(
+  '/records/:recordId/self-assess',
+  validate({ params: recordIdParamSchema, body: selfAssessSchema }),
+  practiceController.selfAssess,
 );
 
 router.get('/stats', practiceController.stats);

@@ -10,6 +10,7 @@ const practiceQuestionsQuerySchema = z
     difficultyMin: z.coerce.number().int().min(1).max(5).optional().default(1),
     difficultyMax: z.coerce.number().int().min(1).max(5).optional().default(5),
     types: z.string().trim().max(100).optional(),
+    questionIds: z.string().trim().max(500).optional(),
   })
   .refine((data) => data.difficultyMin <= data.difficultyMax, {
     message: '难度下限不能大于上限',
@@ -29,9 +30,19 @@ const questionParamSchema = z.object({
   questionId: z.coerce.number().int().positive(),
 });
 
+const selfAssessSchema = z.object({
+  mastered: z.boolean(),
+});
+
+const recordIdParamSchema = z.object({
+  recordId: z.coerce.number().int().positive(),
+});
+
 module.exports = {
   practiceQuestionsQuerySchema,
   submitPracticeSchema,
   wrongQuerySchema,
   questionParamSchema,
+  selfAssessSchema,
+  recordIdParamSchema,
 };

@@ -15,6 +15,15 @@ function submit(req, res) {
   return ok(res, practiceService.submitAnswer(req.body, req.user), '已提交');
 }
 
+function selfAssess(req, res) {
+  const result = practiceService.selfAssess(
+    req.user,
+    req.params.recordId,
+    req.body.mastered,
+  );
+  return ok(res, result, result.message);
+}
+
 function stats(req, res) {
   return ok(res, practiceService.getStats(req.user));
 }
@@ -38,6 +47,7 @@ module.exports = {
   levels,
   questions,
   submit,
+  selfAssess,
   stats,
   wrongQuestions,
   removeWrong,

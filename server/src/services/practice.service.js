@@ -107,9 +107,63 @@ function resolveTopic(level, topicName) {
   return topic;
 }
 
+function buildPracticeItem(question) {
+  const answer = parseJson(question.answer_json, null);
+
+  return {
+    questionId: Number(question.id),
+    type: question.type,
+    typeLabel: QUESTION_TYPE_LABELS[question.type] || question.type,
+    stem: question.stem,
+    difficulty: Number(question.difficulty),
+    score: Number(question.default_score),
+    knowledgeNames: question.knowledgePoints.map((item) => item.name),
+    options: question.options.map((option) => ({
+      label: option.label,
+      content: option.content,
+    })),
+    blankCount: question.type === QUESTION_TYPES.FILL
+      ? (Array.isArray(answer) ? answer.length : 1)
+      : 0,
+  };
+}
+
 function startPractice(query, student) {
+  // 错题重做：按指定题目 ID 出题
+  if (query.questionIds) {
+    const ids = String(query.questionIds)
+      .split(',')
+      .map((item) => Number(item))
+      .filter((item) => Number.isInteger(item) && item > 0)
+      .slice(0, 50);
+
+    const items = [];
+
+    for (const id of ids) {
+      const question = questionRepository.findDetail(id);
+      if (!question) continue;
+      if (question.status !== 'published') continue;
+      if (question.type === QUESTION_TYPES.SHORT) continue;
+      items.push(buildPracticeItem(question));
+    }
+
+    return {
+      items,
+      count: items.length,
+      level: null,
+      topic: null,
+      redo: true,
+      message: items.length === 0 ? '选中的错题暂时无法重做' : '',
+    };
+  }
+
   const level = resolveLevel(query.level);
   const topic = resolveTopic(level, query.topic);
+
+  const allowedTypes = [
+    ...practiceRepository.OBJECTIVE_TYPES,
+    QUESTION_TYPES.SHORT,
+  ];
 
   let types = practiceRepository.OBJECTIVE_TYPES;
   if (query.types) {
@@ -117,11 +171,8 @@ function startPractice(query, student) {
       .split(',')
       .map((item) => item.trim())
       .filter(Boolean);
-    types = requested.filter((item) =>
-      practiceRepository.OBJECTIVE_TYPES.includes(item));
-    if (types.length === 0) {
-      types = practiceRepository.OBJECTIVE_TYPES;
-    }
+    const valid = requested.filter((item) => allowedTypes.includes(item));
+    if (valid.length > 0) types = valid;
   }
 
   const rows = practiceRepository.selectQuestions({
@@ -183,16 +234,7 @@ function submitAnswer(payload, student) {
     throw new NotFoundError('题目不存在或已下架');
   }
 
-  if (question.type === QUESTION_TYPES.SHORT) {
-    throw new BusinessError(
-      '简答题暂不支持自动判分，请使用考试模式',
-      ERROR_CODES.BAD_REQUEST,
-      400,
-    );
-  }
-
   const answer = parseJson(question.answer_json, null);
-  const isCorrect = isAnswerCorrect(question.type, payload.answer, answer);
   const answeredAt = Date.now();
 
   const snapshot = {
@@ -210,6 +252,31 @@ function submitAnswer(payload, student) {
       name: item.name,
     })),
   };
+
+  if (question.type === QUESTION_TYPES.SHORT) {
+    const recordId = practiceRepository.createRecord({
+      studentId: student.id,
+      questionId: question.id,
+      snapshot,
+      answer: payload.answer,
+      isCorrect: null,
+      answeredAt,
+      createdAt: answeredAt,
+    });
+
+    return {
+      recordId,
+      questionId: Number(question.id),
+      type: question.type,
+      typeLabel: QUESTION_TYPE_LABELS[question.type] || question.type,
+      requiresSelfCheck: true,
+      referenceAnswer: answer,
+      analysis: question.analysis || '',
+      answeredAt,
+    };
+  }
+
+  const isCorrect = isAnswerCorrect(question.type, payload.answer, answer);
 
   const recordId = practiceRepository.createRecord({
     studentId: student.id,
@@ -362,10 +429,26 @@ function markMastered(student, questionId) {
   };
 }
 
+function selfAssess(student, recordId, mastered) {
+  const record = practiceRepository.findRecordById(recordId, student.id);
+  if (!record) {
+    throw new NotFoundError('练习记录不存在');
+  }
+
+  practiceRepository.updateSelfAssessment(recordId, Boolean(mastered));
+
+  return {
+    recordId: Number(recordId),
+    isCorrect: Boolean(mastered),
+    message: mastered ? '已记录为掌握' : '已记录为需要继续练习',
+  };
+}
+
 module.exports = {
   getLevels,
   startPractice,
   submitAnswer,
+  selfAssess,
   getStats,
   getWrongQuestions,
   markMastered,
